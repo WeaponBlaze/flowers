@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="""width=device-width,initial-scale=1" 
+  <title:"font-family:Lucida" >I love you Jyantikaaa!!<br> This is a prototype website </title>
+  <style>
+    :root{
+      --bg1:#ffeef2; --bg2:#fff0f6;
+      --accent:#ff6b81; --accent2:#ff8fb1;
+      --petal1:#ff6b81; --petal2:#ff8fb1; --petal3:#ffc1d3; --core:#ffd37a;
+    }
+
+    html,body{height:100%; margin:0; font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(1200px 600px at 10% 10%, #fff6f9 0%, transparent 10%),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      overflow:hidden;
+      color:#333;
+    }
+
+    /* Stage (centerpiece) */
+    .stage{
+      position:relative;
+      width:min(760px,90vw);
+      height:min(520px,70vh);
+      display:grid; place-items:center;
+      pointer-events:none;
+      filter:drop-shadow(0 12px 30px rgba(0,0,0,0.12));
+    }
+
+    /* A subtle heart backdrop behind the bouquet */
+    .heart{
+      position:absolute; width:380px; height:380px; opacity:0.08;
+      background: radial-gradient(circle at 30% 30%, #fff 10%, transparent 11%),
+                  linear-gradient(135deg,#ff758c 0%, #ff9fb5 100%);
+      transform: rotate(-15deg);
+      clip-path: path("M190 270 C60 190 20 110 80 60 C140 10 230 40 190 120 C150 40 240 10 300 60 C360 110 320 190 190 270 Z");
+      left:50%; top:45%; translate:-50% -50%;
+    }
+
+    /* Bouquet base (ribbon/vase hint) */
+    .stem{
+      position:absolute; bottom:8%;
+      width:120px; height:160px; background:linear-gradient(#b33a5a,#7b2136);
+      border-radius:20px 20px 10px 10px; transform:translateY(30px);
+      box-shadow:inset 0 6px 20px rgba(255,200,220,0.06);
+      z-index:2;
+      display:flex; align-items:flex-end; justify-content:center;
+    }
+    .ribbon{
+      width:110px; height:28px; background:linear-gradient(#ffd2e0,#ffb3cb);
+      border-radius:16px; transform:translateY(10px);
+      box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    /* Bouquet container */
+    .bouquet{
+      position:absolute; left:50%; top:40%;
+      width:0; height:0;
+      transform:translate(-50%,-50%);
+      z-index:3;
+      pointer-events:none;
+    }
+
+    /* Flowers arranged into a heart silhouette.
+       Each flower uses --tx / --ty (px offsets from center).
+       We animate from center to those offsets. */
+    .flower{
+      --tx:0px;
+      --ty:0px;
+      --delay:0s;
+      position:absolute; left:50%; top:50%;
+      width:72px; height:72px;
+      transform-origin:center;
+      animation: sprout 900ms cubic-bezier(.2,.9,.28,1) forwards;
+      animation-delay: var(--delay);
+      opacity:0;
+    }
+
+    @keyframes sprout{
+      0%{ transform: translate(-50%,-50%) scale(0.06) rotate(6deg); opacity:0 }
+      70%{ transform: translate(var(--tx),var(--ty)) translate(-50%,-50%) scale(1.06) rotate(0deg); opacity:1 }
+      100%{ transform: translate(var(--tx),var(--ty)) translate(-50%,-50%) scale(1) rotate(0deg); opacity:1 }
+    }
+
+    /* Individual petal shape inside a flower */
+    .flower .petal{
+      --rotate:0deg;
+      --color:var(--petal1);
+      position:absolute;
+      left:50%; top:50%;
+      width:36px; height:56px;
+      transform-origin:50% 80%;
+      background:var(--color);
+      border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow:0 6px 16px rgba(0,0,0,0.12), inset 0 -6px 12px rgba(255,255,255,0.06);
+      transform: translate(-50%,-50%) rotate(var(--rotate)) translateY(-6px);
+      opacity:0.98;
+    }
+
+    .flower .core{
+      position:absolute; left:50%; top:50%;
+      width:18px; height:18px; border-radius:50%;
+      background: radial-gradient(circle at 35% 30%, #fff8df 0%, var(--core) 45%);
+      transform: translate(-50%,-50%);
+      box-shadow:0 4px 8px rgba(255,180,90,0.18);
+    }
+
+    /* Gentle breathing of the whole bouquet after sprouting */
+    .bouquet.animating{ animation: breathe 6s ease-in-out infinite; transform-origin:center; }
+    @keyframes breathe{
+      0%{ transform:translate(-50%,-50%) translateY(0) }
+      50%{ transform:translate(-50%,-50%) translateY(-8px) }
+      100%{ transform:translate(-50%,-50%) translateY(0) }
+    }
+
+    /* Falling petals */
+    .petal-fall{
+      position:fixed; pointer-events:none; z-index:1;
+      width:18px; height:28px; border-radius:50% 50% 40% 40% / 60% 60% 40% 40%;
+      background:var(--pcolor,#ff6b81);
+      transform-origin:center;
+      opacity:0.95;
+      will-change: transform, top, left;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
+      animation: fall var(--dur,6s) linear var(--delay,0s) infinite;
+      mix-blend-mode:screen;
+    }
+
+    @keyframes fall{
+      0%{ transform: translate3d(0,-10vh,0) rotate(var(--r,0deg)) translateX(0); opacity:0 }
+      10%{ opacity:1 }
+      50%{ transform: translate3d(var(--dx,30px),40vh,0) rotate(calc(var(--r,0deg) + 90deg)); }
+      100%{ transform: translate3d(calc(var(--dx,30px)*1.5),110vh,0) rotate(calc(var(--r,0deg) + 160deg)); opacity:0.95 }
+    }
+
+    /* small responsiveness */
+    @media (max-width:560px){
+      .heart{ width:260px; height:260px; opacity:0.06 }
+      .stem{ width:90px; height:120px }
+      /* scale down per-flower offsets on small screens */
+      .flower{ width:56px; height:56px }
+      .flower:nth-child(1){ --tx:-90px; --ty:-30px }
+      .flower:nth-child(2){ --tx:-75px; --ty:-60px }
+      .flower:nth-child(3){ --tx:-55px; --ty:-85px }
+      .flower:nth-child(4){ --tx:-30px; --ty:-95px }
+      .flower:nth-child(5){ --tx:-6px;  --ty:-100px }
+      .flower:nth-child(6){ --tx:20px;  --ty:-95px }
+      .flower:nth-child(7){ --tx:47px;  --ty:-80px }
+      .flower:nth-child(8){ --tx:75px;  --ty:-55px }
+      .flower:nth-child(9){ --tx:95px;  --ty:-20px }
+      .flower:nth-child(10){ --tx:110px; --ty:10px }
+      .flower:nth-child(11){ --tx:95px;  --ty:50px }
+      .flower:nth-child(12){ --tx:70px;  --ty:85px }
+      .flower:nth-child(13){ --tx:40px;  --ty:110px }
+      .flower:nth-child(14){ --tx:0px;   --ty:125px }
+      .flower:nth-child(15){ --tx:-40px; --ty:110px }
+      .flower:nth-child(16){ --tx:-72px; --ty:85px }
+      .flower:nth-child(17){ --tx:-95px; --ty:50px }
+      .flower:nth-child(18){ --tx:-110px;--ty:10px }
+    }
+
+    /* explicit positions for 18 flowers that trace a heart silhouette.
+       Values are offsets from the bouquet center (px). */
+    .flower:nth-child(1){  --tx:-120px; --ty:-40px }
+    .flower:nth-child(2){  --tx:-100px; --ty:-80px }
+    .flower:nth-child(3){  --tx:-70px;  --ty:-110px }
+    .flower:nth-child(4){  --tx:-40px;  --ty:-125px }
+    .flower:nth-child(5){  --tx:-10px;  --ty:-130px }
+    .flower:nth-child(6){  --tx:25px;   --ty:-125px }
+    .flower:nth-child(7){  --tx:55px;   --ty:-110px }
+    .flower:nth-child(8){  --tx:85px;   --ty:-80px }
+    .flower:nth-child(9){  --tx:105px;  --ty:-40px }
+    .flower:nth-child(10){ --tx:120px;  --ty:10px }
+    .flower:nth-child(11){ --tx:100px;  --ty:60px }
+    .flower:nth-child(12){ --tx:70px;   --ty:100px }
+    .flower:nth-child(13){ --tx:35px;   --ty:125px }
+    .flower:nth-child(14){ --tx:0px;    --ty:140px }
+    .flower:nth-child(15){ --tx:-35px;  --ty:125px }
+    .flower:nth-child(16){ --tx:-70px;  --ty:100px }
+    .flower:nth-child(17){ --tx:-100px; --ty:60px }
+    .flower:nth-child(18){ --tx:-120px; --ty:10px }
+
+  </style>
+  <script>
+    // remove the "Valentine Bouquet" title if present
+    document.addEventListener('DOMContentLoaded', function(){
+      const t = document.querySelector('title');
+      if (t) t.remove();
+      else document.title = '';
+    });
+  </script>
+</head>
+<body>
+  <div class="stage" aria-hidden="true">
+    <div class="heart"></div>
+
+    <div class="bouquet" id="bouquet"></div>
+
+    <div class="stem" aria-hidden="true">
+      <div class="ribbon"></div>
+    </div>
+  </div>
+
+  <script>
+    // GitHub Copilot
+    (function(){
+      const bouquet = document.getElementById('bouquet');
+
+      // Color palette for flowers
+      const colors = ['#ff6b81','#ff8fb1','#ffc1d3','#ff4d6d','#ff9ab0'];
+      const flowers = 18;
+      const petalsPerFlower = 5;
+      // create flowers: all originate from same center; sprout to different radii & angles
+      for(let i=0;i<flowers;i++){
+        const f = document.createElement('div');
+        f.className = 'flower';
+        const angle = -90 + (i/(flowers-1))*180 + (Math.random()*24-12); // fan across upper half
+        const radius = 48 + Math.round(40 + Math.random()*120); // distance from center
+        f.style.setProperty('--angle', angle + 'deg');
+        f.style.setProperty('--radius', radius + 'px');
+        f.style.setProperty('--delay', (0.08 * i + Math.random()*0.18) + 's');
+
+        // choose color and slight variance
+        const c = colors[i % colors.length];
+
+        // add petals
+        for(let p=0;p<petalsPerFlower;p++){
+          const pt = document.createElement('div');
+          pt.className = 'petal';
+          const rot = (p * (360 / petalsPerFlower)) + (Math.random()*24-12);
+          pt.style.setProperty('--rotate', rot + 'deg');
+          // color variations
+          const shade = (p%2===0) ? c : (colors[(i+2)%colors.length]);
+          pt.style.setProperty('--color', shade);
+          f.appendChild(pt);
+        }
+        // core
+        const core = document.createElement('div');
+        core.className = 'core';
+        f.appendChild(core);
+
+        bouquet.appendChild(f);
+      }
+
+      // After the sprout animation ends, add gentle breathing animation class
+      setTimeout(()=> bouquet.classList.add('animating'), 1200);
+
+      // Create falling petals from above in a continuous loop
+      const totalFalling = 48;
+      for(let i=0;i<totalFalling;i++){
+        const pet = document.createElement('div');
+        pet.className = 'petal-fall';
+        // size variety
+        const w = 14 + Math.random()*18;
+        const h = w*1.6;
+        pet.style.width = w+'px';
+        pet.style.height = h+'px';
+        // random starting left but focus near center area a bit
+        const centerBias = (Math.random() < 0.6) ? 50 + (Math.random()*24-12) : Math.random()*100;
+        pet.style.left = centerBias + 'vw';
+        pet.style.top = (-8 - Math.random()*12) + 'vh';
+        // rotation and drift
+        const r = Math.round(Math.random()*360);
+        pet.style.setProperty('--r', r + 'deg');
+        pet.style.setProperty('--dx', (Math.random()*140 - 70) + 'px');
+        // random durations/delays so they loop async
+        const dur = 5 + Math.random()*6;
+        pet.style.setProperty('--dur', dur + 's');
+        pet.style.setProperty('--delay', (-Math.random()*dur) + 's');
+        // color choice
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        pet.style.setProperty('--pcolor', color);
+        // gentle tilt (alternate flipping)
+        pet.style.transform = (Math.random()>0.5 ? 'rotate(18deg)' : '') ;
+        document.body.appendChild(pet);
+      }
+
+      // Optional: If user prefers fewer animations on reduced-motion preferences
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if(mq.matches){
+        document.querySelectorAll('.petal-fall').forEach(el=>{
+          el.style.animation = 'none';
+          el.style.opacity = '0.9';
+          el.style.top = '60vh';
+        });
+        document.querySelectorAll('.flower').forEach(el=>{
+          el.style.animation = 'none';
+          el.style.opacity = '1';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>/>
