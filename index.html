@@ -1,298 +1,327 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="""width=device-width,initial-scale=1" 
-  <title> </title>
-  <h2 style=font-family:cursive;color:pink>Happy Birhtday Jyantikaa!! I LOVE YOUUUU SO MUCHHHH<br> I'll Always be here for you, always by your side.<br>Wish you a very verry very happy birthdayyy, ENJOY YOUR DAYYYY!!!!!!!!!!!</h1>
-  <style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solar System — Dark Science Interactive</title>
+<style>
     :root{
-      --bg1:#ffeef2; --bg2:#fff0f6;
-      --accent:#ff6b81; --accent2:#ff8fb1;
-      --petal1:#ff6b81; --petal2:#ff8fb1; --petal3:#ffc1d3; --core:#ffd37a;
+        --bg:#05060a;
+        --panel:#0b0f14;
+        --muted:#92a1b5;
+        --accent:#61dafb;
+        --accent-2:#9be564;
+        --glass: rgba(255,255,255,0.04);
+        --orbit-glow: rgba(128,200,255,0.06);
+        --speed: 1; /* multiplier controlled by JS */
     }
-
-    html,body{height:100%; margin:0; font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    body{
-      display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(1200px 600px at 10% 10%, #fff6f9 0%, transparent 10%),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      overflow:hidden;
-      color:#333;
+    *{box-sizing:border-box;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    html,body{height:100%;margin:0;background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(96,122,255,0.05), transparent 6%),
+        radial-gradient(1000px 500px at 90% 90%, rgba(154,229,132,0.03), transparent 6%),
+        var(--bg); color:#dfeaf6; -webkit-font-smoothing:antialiased;}
+    header{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.03);position:sticky;top:0;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+    h1{font-size:18px;margin:0;color:#e8f7ff;letter-spacing:0.6px}
+    .controls{display:flex;gap:10px;align-items:center;margin-left:auto}
+    .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .btn.active{outline:1px solid rgba(255,255,255,0.04);color:var(--accent)}
+    .control-row{display:flex;gap:12px;align-items:center}
+    .range{accent-color:var(--accent)}
+    main{display:flex;gap:18px;padding:18px;height:calc(100vh - 84px)}
+    .left{flex:1;display:flex;align-items:center;justify-content:center;min-width:360px;position:relative}
+    .space{
+        width:min(920px,86vw);
+        height:min(720px,70vh);
+        position:relative;border-radius:12px;background:
+        radial-gradient(600px 300px at 50% 40%, rgba(255,255,255,0.01), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+        box-shadow: 0 6px 30px rgba(0,0,0,0.7);
+        overflow:visible;padding:24px;
     }
-
-    /* Stage (centerpiece) */
-    .stage{
-      position:relative;
-      width:min(760px,90vw);
-      height:min(520px,70vh);
-      display:grid; place-items:center;
-      pointer-events:none;
-      filter:drop-shadow(0 12px 30px rgba(0,0,0,0.12));
+    .sun{
+        position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+        width:88px;height:88px;border-radius:50%;
+        background:radial-gradient(circle at 30% 30%, #fffbda, #ffd26a 30%, #ff7b00 62%, #4b1b00 100%);
+        box-shadow: 0 0 40px 8px rgba(255,160,40,0.08), 0 0 100px 20px rgba(255,120,20,0.02), inset 0 -10px 30px rgba(0,0,0,0.25);
+        display:flex;align-items:center;justify-content:center;color:#2a1508;font-weight:700;
     }
-
-    /* A subtle heart backdrop behind the bouquet */
-    .heart{
-      position:absolute; width:380px; height:380px; opacity:0.08;
-      background: radial-gradient(circle at 30% 30%, #fff 10%, transparent 11%),
-                  linear-gradient(135deg,#ff758c 0%, #ff9fb5 100%);
-      transform: rotate(-15deg);
-      clip-path: path("M190 270 C60 190 20 110 80 60 C140 10 230 40 190 120 C150 40 240 10 300 60 C360 110 320 190 190 270 Z");
-      left:50%; top:45%; translate:-50% -50%;
+    /* orbit container: rotates */
+    .orbit{
+        position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+        border-radius:50%;display:block;
+        pointer-events:none;
     }
-
-    /* Bouquet base (ribbon/vase hint) */
-    .stem{
-      position:absolute; bottom:8%;
-      width:120px; height:160px; background:linear-gradient(#b33a5a,#7b2136);
-      border-radius:20px 20px 10px 10px; transform:translateY(30px);
-      box-shadow:inset 0 6px 20px rgba(255,200,220,0.06);
-      z-index:2;
-      display:flex; align-items:flex-end; justify-content:center;
+    .orbit::after{
+        content:"";position:absolute;inset:0;border-radius:50%;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
     }
-    .ribbon{
-      width:110px; height:28px; background:linear-gradient(#ffd2e0,#ffb3cb);
-      border-radius:16px; transform:translateY(10px);
-      box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    .orbit .planet{
+        position:absolute;left:50%;transform:translate(-50%, -50%);
+        top:0;pointer-events:auto;cursor:pointer;
+        border-radius:50%;display:flex;align-items:center;justify-content:center;
+        color:rgba(0,0,0,0.6);font-size:11px;font-weight:600;text-shadow:0 1px 0 rgba(255,255,255,0.02);
+        transition:transform .18s ease, box-shadow .18s ease;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 4px 8px rgba(255,255,255,0.02);
     }
-
-    /* Bouquet container */
-    .bouquet{
-      position:absolute; left:50%; top:40%;
-      width:0; height:0;
-      transform:translate(-50%,-50%);
-      z-index:3;
-      pointer-events:none;
-    }
-
-    /* Flowers arranged into a heart silhouette.
-       Each flower uses --tx / --ty (px offsets from center).
-       We animate from center to those offsets. */
-    .flower{
-      --tx:0px;
-      --ty:0px;
-      --delay:0s;
-      position:absolute; left:50%; top:50%;
-      width:72px; height:72px;
-      transform-origin:center;
-      animation: sprout 900ms cubic-bezier(.2,.9,.28,1) forwards;
-      animation-delay: var(--delay);
-      opacity:0;
-    }
-
-    @keyframes sprout{
-      0%{ transform: translate(-50%,-50%) scale(0.06) rotate(6deg); opacity:0 }
-      70%{ transform: translate(var(--tx),var(--ty)) translate(-50%,-50%) scale(1.06) rotate(0deg); opacity:1 }
-      100%{ transform: translate(var(--tx),var(--ty)) translate(-50%,-50%) scale(1) rotate(0deg); opacity:1 }
-    }
-
-    /* Individual petal shape inside a flower */
-    .flower .petal{
-      --rotate:0deg;
-      --color:var(--petal1);
-      position:absolute;
-      left:50%; top:50%;
-      width:36px; height:56px;
-      transform-origin:50% 80%;
-      background:var(--color);
-      border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
-      box-shadow:0 6px 16px rgba(0,0,0,0.12), inset 0 -6px 12px rgba(255,255,255,0.06);
-      transform: translate(-50%,-50%) rotate(var(--rotate)) translateY(-6px);
-      opacity:0.98;
-    }
-
-    .flower .core{
-      position:absolute; left:50%; top:50%;
-      width:18px; height:18px; border-radius:50%;
-      background: radial-gradient(circle at 35% 30%, #fff8df 0%, var(--core) 45%);
-      transform: translate(-50%,-50%);
-      box-shadow:0 4px 8px rgba(255,180,90,0.18);
-    }
-
-    /* Gentle breathing of the whole bouquet after sprouting */
-    .bouquet.animating{ animation: breathe 6s ease-in-out infinite; transform-origin:center; }
-    @keyframes breathe{
-      0%{ transform:translate(-50%,-50%) translateY(0) }
-      50%{ transform:translate(-50%,-50%) translateY(-8px) }
-      100%{ transform:translate(-50%,-50%) translateY(0) }
-    }
-
-    /* Falling petals */
-    .petal-fall{
-      position:fixed; pointer-events:none; z-index:1;
-      width:18px; height:28px; border-radius:50% 50% 40% 40% / 60% 60% 40% 40%;
-      background:var(--pcolor,#ff6b81);
-      transform-origin:center;
-      opacity:0.95;
-      will-change: transform, top, left;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
-      animation: fall var(--dur,6s) linear var(--delay,0s) infinite;
-      mix-blend-mode:screen;
-    }
-
-    @keyframes fall{
-      0%{ transform: translate3d(0,-10vh,0) rotate(var(--r,0deg)) translateX(0); opacity:0 }
-      10%{ opacity:1 }
-      50%{ transform: translate3d(var(--dx,30px),40vh,0) rotate(calc(var(--r,0deg) + 90deg)); }
-      100%{ transform: translate3d(calc(var(--dx,30px)*1.5),110vh,0) rotate(calc(var(--r,0deg) + 160deg)); opacity:0.95 }
-    }
-
-    /* small responsiveness */
-    @media (max-width:560px){
-      .heart{ width:260px; height:260px; opacity:0.06 }
-      .stem{ width:90px; height:120px }
-      /* scale down per-flower offsets on small screens */
-      .flower{ width:56px; height:56px }
-      .flower:nth-child(1){ --tx:-90px; --ty:-30px }
-      .flower:nth-child(2){ --tx:-75px; --ty:-60px }
-      .flower:nth-child(3){ --tx:-55px; --ty:-85px }
-      .flower:nth-child(4){ --tx:-30px; --ty:-95px }
-      .flower:nth-child(5){ --tx:-6px;  --ty:-100px }
-      .flower:nth-child(6){ --tx:20px;  --ty:-95px }
-      .flower:nth-child(7){ --tx:47px;  --ty:-80px }
-      .flower:nth-child(8){ --tx:75px;  --ty:-55px }
-      .flower:nth-child(9){ --tx:95px;  --ty:-20px }
-      .flower:nth-child(10){ --tx:110px; --ty:10px }
-      .flower:nth-child(11){ --tx:95px;  --ty:50px }
-      .flower:nth-child(12){ --tx:70px;  --ty:85px }
-      .flower:nth-child(13){ --tx:40px;  --ty:110px }
-      .flower:nth-child(14){ --tx:0px;   --ty:125px }
-      .flower:nth-child(15){ --tx:-40px; --ty:110px }
-      .flower:nth-child(16){ --tx:-72px; --ty:85px }
-      .flower:nth-child(17){ --tx:-95px; --ty:50px }
-      .flower:nth-child(18){ --tx:-110px;--ty:10px }
-    }
-
-    /* explicit positions for 18 flowers that trace a heart silhouette.
-       Values are offsets from the bouquet center (px). */
-    .flower:nth-child(1){  --tx:-120px; --ty:-40px }
-    .flower:nth-child(2){  --tx:-100px; --ty:-80px }
-    .flower:nth-child(3){  --tx:-70px;  --ty:-110px }
-    .flower:nth-child(4){  --tx:-40px;  --ty:-125px }
-    .flower:nth-child(5){  --tx:-10px;  --ty:-130px }
-    .flower:nth-child(6){  --tx:25px;   --ty:-125px }
-    .flower:nth-child(7){  --tx:55px;   --ty:-110px }
-    .flower:nth-child(8){  --tx:85px;   --ty:-80px }
-    .flower:nth-child(9){  --tx:105px;  --ty:-40px }
-    .flower:nth-child(10){ --tx:120px;  --ty:10px }
-    .flower:nth-child(11){ --tx:100px;  --ty:60px }
-    .flower:nth-child(12){ --tx:70px;   --ty:100px }
-    .flower:nth-child(13){ --tx:35px;   --ty:125px }
-    .flower:nth-child(14){ --tx:0px;    --ty:140px }
-    .flower:nth-child(15){ --tx:-35px;  --ty:125px }
-    .flower:nth-child(16){ --tx:-70px;  --ty:100px }
-    .flower:nth-child(17){ --tx:-100px; --ty:60px }
-    .flower:nth-child(18){ --tx:-120px; --ty:10px }
-
-  </style>
-  <script>
-    // remove the "Valentine Bouquet" title if present
-    document.addEventListener('DOMContentLoaded', function(){
-      const t = document.querySelector('title');
-      if (t) t.remove();
-      else document.title = '';
-    });
-  </script>
+    .planet:focus{outline:2px solid rgba(255,255,255,0.06);transform:scale(1.08)}
+    .orbit[data-rotate="true"]{animation:spin calc(var(--period,60s) / var(--speed,1)) linear infinite}
+    @keyframes spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+    /* small details & labels */
+    .label{position:absolute;left:50%;transform:translate(-50%,-50%);top:-14px;font-size:12px;color:var(--muted);white-space:nowrap}
+    .orbit[data-show="glow"]::after{box-shadow: 0 0 20px rgba(100,180,255,0.02) inset, 0 0 2px rgba(255,255,255,0.01)}
+    /* info panel */
+    .panel{width:360px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px;overflow:auto}
+    .panel h2{margin:0;font-size:16px;color:#eaf7ff}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+    .fact-list{display:grid;gap:8px}
+    .fact{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;font-size:13px;color:var(--muted)}
+    .search{background:var(--glass);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:8px;align-items:center}
+    input[type="search"]{background:transparent;border:0;outline:0;color:inherit;font-size:14px;width:100%}
+    .small{font-size:12px;color:var(--muted)}
+    footer.small{font-size:12px;color:var(--muted);text-align:center;padding-top:8px}
+    /* hover & active highlights */
+    .planet:hover{transform:scale(1.12);box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+    .orbit.active::after{box-shadow:0 0 30px 6px rgba(150,210,255,0.03)}
+    /* responsive */
+    @media (max-width:880px){main{flex-direction:column} .panel{width:100%}}
+</style>
 </head>
 <body>
-  <div class="stage" aria-hidden="true">
-    <div class="heart"></div>
-
-    <div class="bouquet" id="bouquet"></div>
-
-    <div class="stem" aria-hidden="true">
-      <div class="ribbon"></div>
+<header>
+    <h1>Solar System — Dark Science</h1>
+    <div class="controls" role="toolbar" aria-label="Controls">
+        <div class="control-row">
+            <button id="playBtn" class="btn active" title="Pause / Play (Space)">Pause</button>
+            <label class="small" title="Orbit speed">Speed</label>
+            <input id="speed" class="range" type="range" min="0.2" max="3" step="0.1" value="1" aria-label="Speed">
+        </div>
+        <div class="control-row">
+            <label class="small">Orbits</label>
+            <button id="toggleOrbits" class="btn" title="Toggle orbit highlights">Glow</button>
+        </div>
+        <div class="control-row">
+            <div class="search" style="min-width:200px;">
+                <input id="search" type="search" placeholder="Search planet..." aria-label="Search planets">
+            </div>
+        </div>
     </div>
-  </div>
+</header>
 
-  <script>
-    // GitHub Copilot
-    (function(){
-      const bouquet = document.getElementById('bouquet');
+<main>
+    <div class="left">
+        <div class="space" id="""space" aria-hidden="""false" title="Interactive solar syst
+            <div class="sun" role="img" aria-label="Sun">Sun</div>
 
-      // Color palette for flowers
-      const colors = ['#ff6b81','#ff8fb1','#ffc1d3','#ff4d6d','#ff9ab0'];
-      const flowers = 18;
-      const petalsPerFlower = 5;
-      // create flowers: all originate from same center; sprout to different radii & angles
-      for(let i=0;i<flowers;i++){
-        const f = document.createElement('div');
-        f.className = 'flower';
-        const angle = -90 + (i/(flowers-1))*180 + (Math.random()*24-12); // fan across upper half
-        const radius = 48 + Math.round(40 + Math.random()*120); // distance from center
-        f.style.setProperty('--angle', angle + 'deg');
-        f.style.setProperty('--radius', radius + 'px');
-        f.style.setProperty('--delay', (0.08 * i + Math.random()*0.18) + 's');
+            <!-- Orbits and planets (sizes and periods approximate and scaled for effect) -->
+            <div class="orbit" data-name="Mercury" style="--period:8s;width:120px;height:120px;" data-show="true">
+                <div class="planet" tabindex="0" data-name="Mercury" data-radius="2440 km" data-distance="57.9 million km" data-gravity="3.7 m/s²" data-type="Rocky" data-desc="Mercury is the smallest planet and closest to the Sun. Surface is heavily cratered and very hot by day." style="width:10px;height:10px;background:linear-gradient(135deg,#b9b9b9,#8f8f8f)"></div>
+            </div>
 
-        // choose color and slight variance
-        const c = colors[i % colors.length];
+            <div class="orbit" data-name="Venus" style="--period:12s;width:170px;height:170px;">
+                <div class="planet" tabindex="0" data-name="Venus" data-radius="6052 km" data-distance="108.2 million km" data-gravity="8.87 m/s²" data-type="Rocky" data-desc="Venus has a thick CO₂ atmosphere and is the hottest planet due to greenhouse effect." style="width:18px;height:18px;background:linear-gradient(135deg,#e5c28f,#d49b55)"></div>
+            </div>
 
-        // add petals
-        for(let p=0;p<petalsPerFlower;p++){
-          const pt = document.createElement('div');
-          pt.className = 'petal';
-          const rot = (p * (360 / petalsPerFlower)) + (Math.random()*24-12);
-          pt.style.setProperty('--rotate', rot + 'deg');
-          // color variations
-          const shade = (p%2===0) ? c : (colors[(i+2)%colors.length]);
-          pt.style.setProperty('--color', shade);
-          f.appendChild(pt);
-        }
-        // core
-        const core = document.createElement('div');
-        core.className = 'core';
-        f.appendChild(core);
+            <div class="orbit" data-name="Earth" style="--period:16s;width:230px;height:230px;">
+                <div class="planet" tabindex="0" data-name="Earth" data-radius="6371 km" data-distance="149.6 million km" data-gravity="9.81 m/s²" data-type="Rocky" data-desc="Earth is the only known world to support life, with liquid water on its surface and a protective atmosphere." style="width:20px;height:20px;background:linear-gradient(180deg,#2a77d9,#1f5ea0)"></div>
+            </div>
 
-        bouquet.appendChild(f);
-      }
+            <div class="orbit" data-name="Mars" style="--period:22s;width:290px;height:290px;">
+                <div class="planet" tabindex="0" data-name="Mars" data-radius="3389 km" data-distance="227.9 million km" data-gravity="3.71 m/s²" data-type="Rocky" data-desc="Mars is a cold desert world with the largest volcano in the solar system, Olympus Mons." style="width:16px;height:16px;background:linear-gradient(135deg,#d96b4b,#a53e2a)"></div>
+            </div>
 
-      // After the sprout animation ends, add gentle breathing animation class
-      setTimeout(()=> bouquet.classList.add('animating'), 1200);
+            <div class="orbit" data-name="Jupiter" style="--period:40s;width:420px;height:420px;">
+                <div class="planet" tabindex="0" data-name="Jupiter" data-radius="69911 km" data-distance="778.5 million km" data-gravity="24.79 m/s²" data-type="Gas Giant" data-desc="Jupiter is the largest planet, mostly hydrogen/helium, with a persistent Great Red Spot storm." style="width:36px;height:36px;background:linear-gradient(135deg,#d8b07c,#b87b46)"></div>
+            </div>
 
-      // Create falling petals from above in a continuous loop
-      const totalFalling = 48;
-      for(let i=0;i<totalFalling;i++){
-        const pet = document.createElement('div');
-        pet.className = 'petal-fall';
-        // size variety
-        const w = 14 + Math.random()*18;
-        const h = w*1.6;
-        pet.style.width = w+'px';
-        pet.style.height = h+'px';
-        // random starting left but focus near center area a bit
-        const centerBias = (Math.random() < 0.6) ? 50 + (Math.random()*24-12) : Math.random()*100;
-        pet.style.left = centerBias + 'vw';
-        pet.style.top = (-8 - Math.random()*12) + 'vh';
-        // rotation and drift
-        const r = Math.round(Math.random()*360);
-        pet.style.setProperty('--r', r + 'deg');
-        pet.style.setProperty('--dx', (Math.random()*140 - 70) + 'px');
-        // random durations/delays so they loop async
-        const dur = 5 + Math.random()*6;
-        pet.style.setProperty('--dur', dur + 's');
-        pet.style.setProperty('--delay', (-Math.random()*dur) + 's');
-        // color choice
-        const color = colors[Math.floor(Math.random()*colors.length)];
-        pet.style.setProperty('--pcolor', color);
-        // gentle tilt (alternate flipping)
-        pet.style.transform = (Math.random()>0.5 ? 'rotate(18deg)' : '') ;
-        document.body.appendChild(pet);
-      }
+            <div class="orbit" data-name="Saturn" style="--period:60s;width:540px;height:540px;">
+                <div class="planet" tabindex="0" data-name="Saturn" data-radius="58232 km" data-distance="1.43 billion km" data-gravity="10.44 m/s²" data-type="Gas Giant" data-desc="Saturn is known for its spectacular ring system made of ice and rock." style="width:30px;height:30px;background:linear-gradient(135deg,#f3e6b7,#cfb57b)"></div>
+            </div>
 
-      // Optional: If user prefers fewer animations on reduced-motion preferences
-      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if(mq.matches){
-        document.querySelectorAll('.petal-fall').forEach(el=>{
-          el.style.animation = 'none';
-          el.style.opacity = '0.9';
-          el.style.top = '60vh';
-        });
-        document.querySelectorAll('.flower').forEach(el=>{
-          el.style.animation = 'none';
-          el.style.opacity = '1';
-        });
-      }
-    })();
-  </script>
+            <div class="orbit" data-name="Uranus" style="--period:90s;width:640px;height:640px;">
+                <div class="planet" tabindex="0" data-name="Uranus" data-radius="25362 km" data-distance="2.87 billion km" data-gravity="8.69 m/s²" data-type="Ice Giant" data-desc="Uranus rotates on its side and has a faint ring system. Atmosphere contains water, ammonia and methane ices." style="width:26px;height:26px;background:linear-gradient(135deg,#b6f0f5,#73dfe0)"></div>
+            </div>
+
+            <div class="orbit" data-name="Neptune" style="--period:140s;width:740px;height:740px;">
+                <div class="planet" tabindex="0" data-name="Neptune" data-radius="24622 km" data-distance="4.5 billion km" data-gravity="11.15 m/s²" data-type="Ice Giant" data-desc="Neptune is deep blue with supersonic winds and active weather patterns." style="width:26px;height:26px;background:linear-gradient(135deg,#2b69e6,#1856b0)"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <aside class="panel" id="info" aria-live="polite">
+        <div class="search" style="margin-bottom:6px">
+            <input id="miniSearch" type="search" placeholder="Filter quick facts (e.g., gravity, distance)" aria-label="Filter facts">
+        </div>
+        <div id="placeholder">
+            <h2>Welcome to the Solar System</h2>
+            <div class="small">Click a planet to reveal scientific data. Use controls to pause, change speed, or highlight orbits. Keyboard: Tab to focus planets, Space to play/pause.</div>
+        </div>
+
+        <div id="details" style="display:none">
+            <h2 id="pname">Planet</h2>
+            <div class="meta" id="pmeta"></div>
+            <div class="fact-list" id="pfacts"></div>
+            <div class="small" id="pdesc"></div>
+        </div>
+
+        <hr style="border:none;height:1px;background:rgba(255,255,255,0.02)">
+        <div>
+            <h3 style="margin:0 0 6px 0;font-size:14px;color:#e8f7ff">Science Spotlight</h3>
+            <div class="fact">Light takes about 8 minutes to travel from the Sun to Earth — a reminder that when we look at the Sun, we see its past.</div>
+            <div class="fact">Gravity governs orbits: elliptical paths arise from the balance of forward motion and gravitational attraction.</div>
+            <div class="fact">Planetary atmospheres shape climate and surface conditions; composition differences create diverse worlds.</div>
+            <div class="fact">Telescopes and spacecraft provide complementary data — remote sensing vs. in situ measurements.</div>
+        </div>
+        <footer class="small">Built for learning — sizes & periods are scaled for visualization, not exact.</footer>
+    </aside>
+</main>
+
+<script>
+/* GitHub Copilot - interactive solar system script (inline) */
+const playBtn = document.getElementById('playBtn');
+const speed = document.getElementById('speed');
+const toggleOrbits = document.getElementById('toggleOrbits');
+const search = document.getElementById('search');
+const miniSearch = document.getElementById('miniSearch');
+const space = document.getElementById('space');
+const details = document.getElementById('details');
+const placeholder = document.getElementById('placeholder');
+const pname = document.getElementById('pname');
+const pmeta = document.getElementById('pmeta');
+const pfacts = document.getElementById('pfacts');
+const pdesc = document.getElementById('pdesc');
+
+let playing = true;
+let orbitGlow = false;
+
+/* Toggle play/pause */
+function setPlaying(state){
+    playing = state;
+    playBtn.classList.toggle('active', !state);
+    playBtn.textContent = state ? 'Pause' : 'Play';
+    // When paused, remove animation by setting data-rotate=false
+    document.querySelectorAll('.orbit').forEach(o=>{
+        o.dataset.rotate = state ? 'true' : 'false';
+    });
+}
+playBtn.addEventListener('click', ()=> setPlaying(!playing));
+document.addEventListener('keydown', e=> {
+    if(e.code === 'Space'){ e.preventDefault(); setPlaying(!playing); }
+});
+
+/* Speed control */
+function updateSpeed(){
+    document.documentElement.style.setProperty('--speed', speed.value);
+    document.querySelectorAll('.orbit').forEach(o=>{
+        o.style.setProperty('--speed', speed.value);
+    });
+}
+speed.addEventListener('input', updateSpeed);
+updateSpeed();
+
+/* Toggle orbit glow */
+toggleOrbits.addEventListener('click', ()=>{
+    orbitGlow = !orbitGlow;
+    toggleOrbits.classList.toggle('active', orbitGlow);
+    document.querySelectorAll('.orbit').forEach(o=> o.dataset.show = orbitGlow ? 'glow' : 'true');
+});
+
+/* Planet click handler */
+function showPlanet(el){
+    const data = {...el.dataset}; // name, radius, distance, gravity, type, desc
+    placeholder.style.display = 'none';
+    details.style.display = 'block';
+    pname.textContent = data.name || 'Unknown';
+    pmeta.innerHTML = `
+        <div>Type: <strong style="color:var(--accent)">${data.type || '—'}</strong></div>
+        <div>Radius: <strong>${data.radius || '—'}</strong></div>
+        <div>Distance: <strong>${data.distance || '—'}</strong></div>
+        <div>Surface gravity: <strong>${data.gravity || '—'}</strong></div>
+    `;
+    pdesc.textContent = data.desc || '';
+    // facts (small computed items)
+    pfacts.innerHTML = '';
+    const facts = [
+        {k:'Orbital period (visual scale)', v: getOrbitPeriod(el)},
+        {k:'Relative size (visual)', v: el.style.width || '—'},
+        {k:'Interesting', v: generateFactSnippet(data)}
+    ];
+    facts.forEach(f=>{
+        const d = document.createElement('div');
+        d.className = 'fact';
+        d.textContent = `${f.k}: ${f.v}`;
+        pfacts.appendChild(d);
+    });
+    // highlight orbit
+    document.querySelectorAll('.orbit').forEach(o=>o.classList.toggle('active', o.dataset.name===data.name));
+}
+
+/* Helpers */
+function getOrbitPeriod(el){
+    // read period from parent orbit style property --period or dataset
+    const orbit = el.closest('.orbit');
+    const period = getComputedStyle(orbit).getPropertyValue('--period') || orbit.style.getPropertyValue('--period') ||  'unknown';
+    return period.trim();
+}
+function generateFactSnippet(data){
+    if(!data.name) return '';
+    if(data.name.toLowerCase()==='earth') return 'Supports liquid water and life as far as we know.';
+    if(data.name.toLowerCase()==='jupiter') return 'Has dozens of moons and powerful magnetic fields.';
+    if(data.name.toLowerCase()==='saturn') return 'Rings are made of ice and rock fragments.';
+    if(data.name.toLowerCase()==='venus') return 'Hottest surface due to runaway greenhouse effect.';
+    return data.desc || '';
+}
+
+/* Add listeners to all planets */
+document.querySelectorAll('.planet').forEach(p=>{
+    p.addEventListener('click', ()=> showPlanet(p));
+    p.addEventListener('keydown', e=> { if(e.key==='Enter') showPlanet(p); });
+    // position label using parent's width
+    const orb = p.closest('.orbit');
+    const w = parseFloat(orb.style.width) || orb.getBoundingClientRect().width || 200;
+    orb.style.left = '50%'; // ensure centered
+});
+
+/* Search planets (filter by name) */
+search.addEventListener('input', ()=>{
+    const q = search.value.trim().toLowerCase();
+    document.querySelectorAll('.orbit').forEach(o=>{
+        const name = (o.dataset.name||'').toLowerCase();
+        o.style.display = (!q || name.includes(q)) ? 'block' : 'none';
+    });
+});
+
+/* Mini search filters facts in the info panel */
+miniSearch.addEventListener('input', ()=>{
+    const q = miniSearch.value.trim().toLowerCase();
+    document.querySelectorAll('#pfacts .fact').forEach(f=>{
+        f.style.display = (!q || f.textContent.toLowerCase().includes(q)) ? 'block' : 'none';
+    });
+});
+
+/* Initial: set orbits to rotate and apply sizes & centers based on inline width */
+document.querySelectorAll('.orbit').forEach(o=>{
+    // ensure rotation is enabled on load
+    o.dataset.rotate = 'true';
+    // center by using left/top 50% (already), ensure transform origin
+    o.style.transformOrigin = '50% 50%';
+    // ensure the planet sits at top of orbit by setting its transform
+    const planet = o.querySelector('.planet');
+    if(planet){
+        // nothing to change; planet is at top 0
+    }
+});
+
+/* Accessibility hint */
+playBtn.title = 'Pause / Play (Space)';
+
+/* Small animation tweak: slight planet self-rotation */
+document.querySelectorAll('.planet').forEach(p=>{
+    p.animate([
+        {transform: 'translate(-50%, -50%) rotate(0deg)'},
+        {transform: 'translate(-50%, -50%) rotate(360deg)'}
+    ], {duration: 6000 + Math.random()*4000, iterations: Infinity});
+});
+</script>
 </body>
-</html>/>
+</html>em">
