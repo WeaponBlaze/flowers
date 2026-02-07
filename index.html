@@ -1,370 +1,437 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Happy Birthdayyy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Jyantika</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<!-- Cursive font -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ffffff 0%, #ffe0e6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-<style>
-  :root{
-    --bg1:#ffe9f2;
-    --bg2:#ffd6e8;
-    --pink-1:#ff96c6;
-    --pink-2:#ff6799;
-    --accent:#ff4d88;
-    --paper:#fffaf8;
-    --shadow: rgba(0,0,0,0.12);
-  }
-  html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  body{
-    background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.6), transparent 10%),
-                linear-gradient(180deg,var(--bg1),var(--bg2));
-    display:flex;align-items:center;justify-content:center;
-    overflow:hidden;
-  }
+    .container {
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+    }
 
-  /* Main stage */
-  .stage{
-    width:920px; max-width:96vw;
-    height:640px; max-height:86vh;
-    display:grid;place-items:center;
-    position:relative;
-    filter: drop-shadow(0 18px 30px rgba(255,102,153,0.06));
-  }
+    .intro {
+      background: linear-gradient(135deg, #c41e3a 0%, #ff1493 100%);
+      padding: 40px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      display: none;
+      animation: fadeOut 1.2s ease-in-out forwards;
+      box-shadow: 0 10px 40px rgba(255, 20, 147, 0.3);
+    }
 
-  /* envelope */
-  .envelope{
-    width:520px; height:340px;
-    position:relative;
-    transform-style:preserve-3d;
-    transition: transform 600ms cubic-bezier(.2,.9,.3,1);
-    cursor:pointer;
-  }
-  .envelope .body{
-    position:absolute;left:0;top:0;right:0;bottom:0;
-    background:linear-gradient(180deg,var(--paper),#fff);
-    border-radius:10px;
-    box-shadow:0 12px 30px var(--shadow), inset 0 -6px 14px rgba(0,0,0,0.02);
-    overflow:hidden;
-    border:1px solid rgba(255,118,154,0.12);
-  }
-  /* flap */
-  .envelope .flap{
-    position:absolute;
-    left:0; right:0; top:-2px;
-    height:50%;
-    transform-origin:center top;
-    background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-    transition: transform 700ms cubic-bezier(.2,.9,.3,1);
-    box-shadow: 0 10px 30px rgba(255,95,160,0.14);
-    border:1px solid rgba(255,118,154,0.12);
-  }
-  .envelope .seal{
-    position:absolute;
-    left:50%; top:36%;
-    transform:translate(-50%,-50%);
-    width:74px; height:74px;
-    border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #fff4f8, var(--accent));
-    display:flex;align-items:center;justify-content:center;
-    color:white;font-weight:700;
-    box-shadow:0 6px 18px rgba(255,80,140,0.18);
-    border:3px solid rgba(255,255,255,0.18);
-    font-size:26px;
-  }
+    .intro h1 {
+      color: #ffffff;
+      font-size: 2.5em;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                   0 0 40px rgba(255, 255, 255, 0.6),
+                   0 0 60px rgba(255, 105, 180, 0.5);
+      animation: glow 2s ease-in-out infinite;
+      letter-spacing: 1px;
+    }
 
-  /* letter (hidden until open) */
-  .letter{
-    width:440px; height:290px;
-    position:absolute;left:50%;transform:translateX(-50%);
-    top:30px;
-    background:var(--paper);
-    border-radius:8px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-    border:1px solid rgba(0,0,0,0.03);
-    transform-origin: bottom center;
-    transition: transform 600ms cubic-bezier(.2,.9,.3,1), opacity 400ms;
-    opacity:0;
-    pointer-events:none;
-    display:grid;
-    overflow:visible;
-  }
+    @keyframes glow {
+      0%, 100% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                     0 0 40px rgba(255, 255, 255, 0.6),
+                     0 0 60px rgba(255, 105, 180, 0.5);
+      }
+      50% {
+        text-shadow: 0 0 30px rgba(255, 255, 255, 1),
+                     0 0 50px rgba(255, 255, 255, 0.8),
+                     0 0 80px rgba(255, 105, 180, 0.7);
+      }
+    }
 
-  /* When envelope open */
-  .envelope.open{ transform:translateY(-6px); }
-  .envelope.open .flap{ transform: rotateX(-180deg); box-shadow: none; }
-  .envelope.open .letter{ opacity:1; transform: translateX(-50%) translateY(-18px); pointer-events:auto; }
+    .intro.show {
+      display: block;
+      animation: fadeIn 1.2s ease-in-out;
+    }
 
-  /* pages stack */
-  .pages{
-    position:relative; width:100%; height:100%;
-    padding:28px;
-    perspective:1200px;
-  }
-  .page{
-    --page-bg: linear-gradient(180deg,#fff,#fffaf8);
-    position:absolute; inset:0;
-    background:var(--page-bg);
-    border-radius:6px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
-    transform-origin:left center;
-    transition: transform 800ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms;
-    backface-visibility:hidden;
-    padding:28px;
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
-    user-select:none;
-  }
-  .page:nth-child(1){ z-index:5; }
-  .page:nth-child(2){ z-index:4; transform: translateX(3px); }
-  .page:nth-child(3){ z-index:3; transform: translateX(6px); }
-  .page:nth-child(4){ z-index:2; transform: translateX(9px); }
+    .prompt {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      display: none;
+      animation: fadeOut 1.2s ease-in-out forwards;
+    }
 
-  .page p{
-    font-family: 'Dancing Script', cursive;
-    font-size:26px;
-    color:#86284b;
-    margin:0; text-align:center; line-height:1.4;
-    letter-spacing:0.6px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.6);
-  }
+    .prompt.show {
+      display: block;
+      animation: fadeIn 1.2s ease-in-out;
+    }
 
-  /* flipped state - turn like a page to the left */
-  .page.flipped{
-    transform: rotateY(-180deg) translateX(-6px) scaleX(-1);
-    box-shadow: none;
-  }
+    .prompt h2 {
+      color: #c41e3a;
+      font-size: 1.8em;
+      margin-bottom: 30px;
+    }
 
-  /* hint */
-  .hint{
-    position:absolute; bottom:-42px; left:50%; transform:translateX(-50%);
-    font-size:13px; color:#8a4660; opacity:0.9;
-  }
+    .button-group {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-  /* falling flowers container */
-  .sky {
-    pointer-events:none;
-    position:absolute; inset:0;
-    overflow:hidden;
-    z-index:1;
-  }
-  .flower{
-    position:absolute; top:-80px;
-    width:42px; height:42px;
-    opacity:0.95;
-    transform-origin:center;
-    will-change: transform, opacity;
-    filter: drop-shadow(0 10px 18px rgba(255,80,140,0.12));
-    animation-name: fall, sway;
-    animation-iteration-count: 1, infinite;
-    animation-timing-function: cubic-bezier(.2,.9,.3,1), ease-in-out;
-  }
+    button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
 
-  /* fall moves down with rotate */
-  @keyframes fall{
-    0%{ transform: translateY(-120px) rotate(0deg) scale(1); opacity:0; }
-    10%{ opacity:1; }
-    90%{ opacity:1; }
-    100%{ transform: translateY(110vh) rotate(720deg) scale(0.8); opacity:0.95; }
-  }
-  @keyframes sway{
-    0%{ transform: translateX(0px); }
-    50%{ transform: translateX(18px); }
-    100%{ transform: translateX(0px); }
-  }
+    .yes-btn {
+      background: linear-gradient(135deg, #ff1493, #c41e3a);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+    }
 
-  /* small UX polish */
-  .footer-note{
-    position:absolute; bottom:20px; right:20px;
-    color:#7a3b55; font-size:12px; opacity:0.6;
-  }
+    .yes-btn:hover,
+    .yes-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 20, 147, 0.6);
+    }
 
-  /* responsive */
-  @media (max-width:650px){
-    .envelope{ width:88vw; height:58vw; }
-    .letter{ width:78vw; height:52vw; top:20px; }
-  }
+    .no-btn {
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+      color: white;
+      position: relative;
+    }
 
-</style>
+    .no-btn:hover,
+    .no-btn:active {
+      transform: scale(1.05);
+    }
+
+    .emoji-falling {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      z-index: 100;
+      animation: fall linear forwards;
+      top: -50px;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      .intro {
+        padding: 30px;
+        margin-bottom: 20px;
+      }
+
+      .intro h1 {
+        font-size: 1.8em;
+        color: #ffffff;
+      }
+
+      .prompt {
+        padding: 30px;
+      }
+
+      .prompt h2 {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+      }
+
+      button {
+        padding: 10px 25px;
+        font-size: 1em;
+      }
+
+      .button-group {
+        gap: 15px;
+      }
+
+      .final-message {
+        padding: 30px;
+      }
+
+      .final-message p {
+        font-size: 1.1em;
+        line-height: 1.6;
+      }
+
+      .emoji-falling {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        width: 95%;
+        padding: 15px;
+      }
+
+      .intro {
+        padding: 20px;
+        margin-bottom: 15px;
+      }
+
+      .intro h1 {
+        font-size: 1.5em;
+        color: #ffffff;
+      }
+
+      .prompt {
+        padding: 20px;
+      }
+
+      .prompt h2 {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 0.95em;
+      }
+
+      .button-group {
+        gap: 10px;
+      }
+
+      .final-message {
+        padding: 20px;
+      }
+
+      .final-message p {
+        font-size: 1em;
+      }
+    }
+
+    .final-message {
+      background: linear-gradient(135deg, rgba(255, 240, 245, 1) 0%, rgba(255, 220, 230, 1) 100%);
+      padding: 50px;
+      border-radius: 20px;
+      display: none;
+      animation: fadeOut 1.2s ease-in-out forwards;
+      box-shadow: 0 15px 50px rgba(255, 20, 147, 0.25),
+                  0 8px 25px rgba(0, 0, 0, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 2px solid rgba(255, 105, 180, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-message::before,
+    .final-message::after {
+      content: '💕';
+      position: absolute;
+      font-size: 2.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .final-message::before {
+      top: 15px;
+      left: 20px;
+      animation-delay: 0s;
+    }
+
+    .final-message::after {
+      bottom: 15px;
+      right: 20px;
+      animation-delay: 1s;
+    }
+
+    .final-message.show {
+      display: block;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .final-message p {
+      color: #ff1493;
+      font-size: 1.4em;
+      line-height: 1.8;
+      text-shadow: 0 0 20px #ff1493, 0 0 40px #ff1493;
+      animation: glow 2s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    .single-btn-group {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
 </head>
 <body>
-<div class="stage" aria-hidden="false">
-  <div class="sky" id="sky"></div>
+  <div class="container">
+    <div class="intro show" id="intro">
+      <h1>Hi Jyantika. This is from your Cuttiee 💕</h1>
+    </div>
 
-  <div class="envelope" id="envelope" role="button" aria-label="Open letter" tabindex="0">
-    <div class="body"></div>
-    <div class="flap"></div>
-    <div class="seal">❤</div>
-
-    <div class="letter" id="letter" aria-hidden="true">
-      <div class="pages" id="pages" title="Click a page to turn">
-        <div class="page" data-index="0">
-          <p>My LOVEE, JYANTIKAAAAA!!</p>
-        </div>
-        <div class="page" data-index="1">
-          <p>Happy Birthday to you my love, have a greatt and beautiful day ahead <br> -Apka Pyaara Bhadwaa</p>
-        </div>
-        <div class="page" data-index="2">
-          <p>May this small bouquet carry a thousand warm wishes and a gentle smile. <br> ENJOY YOUR DAY MADAM JI! I'll always be with you</p>
-        </div>
-        <div class="page" data-index="3">
-          <p>I loveee youuuu SOOO MUCCHHHHHH, I want you to be a part of me and I want you to be with me. I LOVEE YOUUUUUUUU!!!<br> This day is special for you and me birth of my lovee LOL</p>
-        </div>
+    <div class="prompt" id="prompt1">
+      <h2>You are my Cuttie?</h2>
+      <div class="button-group single-btn-group">
+        <button class="yes-btn" onclick="nextPrompt()">Yes</button>
       </div>
-      <div class="hint">CLICK TO SEE</div>
+    </div>
+
+    <div class="prompt" id="prompt2">
+      <h2>Do you love me?</h2>
+      <div class="button-group">
+        <button class="yes-btn" onclick="nextPrompt()">Yes</button>
+        <button class="no-btn" id="noBtn1" onclick="moveButton(this)">No</button>
+      </div>
+    </div>
+
+    <div class="prompt" id="prompt3">
+      <h2 id="proposal">So will you be my Valentine pleasee???</h2>
+      <div class="button-group">
+        <button class="yes-btn" onclick="showFinalMessage()">Yes</button>
+        <button class="no-btn" id="noBtn2" onclick="moveButtonAndChangeText()">No</button>
+      </div>
+    </div>
+
+    <div class="final-message" id="finalMessage">
+      <p>I love you Jyantika, thanks for being with me, i know most of the time when you need me, im not there but when I need you, you are there everytime, I will improve on that, but I'm glad I met you, I promise you that i'll be by your side always wether you are wrong or right. Happy Propose day madam, I love you so much. 💕</p>
     </div>
   </div>
 
-  <div class="footer-note">Touch for flowers</div>
-</div>
+  <script>
+    let step = 0;
+    let noClickCount = 0;
 
-<script>
-  // Minimal helpers
-  const envelope = document.getElementById('envelope');
-  const letter = document.getElementById('letter');
-  const pages = Array.from(document.querySelectorAll('.page'));
-  const sky = document.getElementById('sky');
+    const cuteEmojis = ['💕', '❤️', '🌹', '💐', '🌸', '💖', '✨', '🎀', '💝', '🦋', '🌺', '🍀'];
+    const pleaMessages = [
+      'PLEASE!!',
+      'Come on Pleaseee!!',
+      'Really?',
+      "Don't be shy...",
+      "I'm begging you...",
+      'Pretty pretty PLEASE!!!',
+      "You're breaking my heart...",
+      'Just say YES! 💕'
+    ];
 
-  let opened = false;
-  let current = 0;
+    function createFallingEmoji() {
+      const emoji = document.createElement('div');
+      emoji.className = 'emoji-falling';
+      emoji.textContent = cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
+      emoji.style.left = Math.random() * 100 + '%';
+      emoji.style.top = '-50px';
+      const duration = 5 + Math.random() * 3;
+      emoji.style.animationDuration = duration + 's';
+      emoji.style.opacity = Math.random() * 0.5 + 0.5;
+      document.body.appendChild(emoji);
 
-  // Open envelope toggling
-  function openEnvelope(){
-    if(opened) return;
-    opened = true;
-    envelope.classList.add('open');
-    letter.setAttribute('aria-hidden','false');
-    startFlowers(18);
-    // initial focus to first page
-    pages[0].focus?.();
-  }
-
-  envelope.addEventListener('click', openEnvelope);
-  envelope.addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
-  });
-
-  // Page turn logic
-  pages.forEach((page, idx)=>{
-    page.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      if(!opened) return;
-      if(idx !== current) return; // only top page can be turned
-      page.classList.add('flipped');
-      current++;
-      // subtle pop of flowers when turning
-      sprinkle(5);
-      // loop pages: when all flipped, reset after a pause
-      if(current >= pages.length){
-        setTimeout(()=> resetPages(), 1600);
-      }
-    });
-  });
-
-  function resetPages(){
-    pages.forEach(p => p.classList.remove('flipped'));
-    current = 0;
-    // gentle cascade of flowers on reset
-    sprinkle(8);
-  }
-
-  // Flower SVG (small blossom)
-  function flowerSVG(color="#ff88b6"){
-    return `
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="64" height="64">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0" stop-color="#fff1f6"/>
-            <stop offset="1" stop-color="${color}"/>
-          </linearGradient>
-        </defs>
-        <g transform="translate(0,0)">
-          <path d="M32 8C28 6 24 10 20 14c-6 6-8 12-6 16 2 6 10 10 16 8 6-2 10-8 12-12 2-6-2-12-8-16-4-2-8-6-10-10z" fill="url(#g)" opacity="0.98"/>
-          <circle cx="32" cy="34" r="6" fill="#ffd4e6" />
-        </g>
-      </svg>
-    `;
-  }
-
-  // Spawn falling flower(s)
-  function spawnFlower(options = {}){
-    const el = document.createElement('div');
-    el.className = 'flower';
-    const colors = ['#ff9ecf','#ff7aa9','#ff5d92','#ffb4d6','#ff86bf'];
-    const color = options.color || colors[Math.floor(Math.random()*colors.length)];
-    el.innerHTML = flowerSVG(color);
-    const left = (options.left !== undefined) ? options.left : (Math.random()*100);
-    const size = options.size || (28 + Math.random()*36);
-    const duration = options.duration || (4 + Math.random()*6); // seconds
-    const delay = options.delay || (Math.random()*2);
-    el.style.left = left + 'vw';
-    el.style.width = size + 'px';
-    el.style.height = size + 'px';
-    el.style.opacity = (0.8 + Math.random()*0.25);
-    // set animations
-    el.style.animationDuration = `${duration}s, ${1.5 + Math.random()*2}s`;
-    el.style.animationDelay = `${delay}s, 0s`;
-    el.style.transform = `rotate(${Math.random()*360}deg)`;
-    sky.appendChild(el);
-    // cleanup after animation
-    setTimeout(()=> {
-      el.remove();
-    }, (delay+duration+0.5)*1000);
-  }
-
-  // Start a gentle continuous rain of flowers
-  let rainInterval;
-  function startFlowers(count = 12){
-    // spawn a few immediately
-    for(let i=0;i<Math.min(count,10);i++){
-      spawnFlower({ left: Math.random()*96, delay: Math.random()*0.8, duration: 4+Math.random()*5 });
+      setTimeout(() => emoji.remove(), duration * 1000);
     }
-    // then set interval for occasional extras
-    if(rainInterval) clearInterval(rainInterval);
-    rainInterval = setInterval(()=> {
-      spawnFlower({ left: Math.random()*96, duration: 4+Math.random()*5 });
-      // add a slightly larger cluster sometimes
-      if(Math.random() < 0.28){
-        spawnFlower({ left: Math.random()*96, size: 48, duration: 5 + Math.random()*4 });
+
+    const emojiInterval = setInterval(createFallingEmoji, 600);
+
+    setTimeout(() => {
+      document.getElementById('intro').classList.remove('show');
+      setTimeout(() => {
+        document.getElementById('prompt1').classList.add('show');
+      }, 600);
+      step = 1;
+    }, 3000);
+
+    function nextPrompt() {
+      if (step === 1) {
+        document.getElementById('prompt1').classList.remove('show');
+        setTimeout(() => {
+          document.getElementById('prompt2').classList.add('show');
+        }, 600);
+        step = 2;
+      } else if (step === 2) {
+        document.getElementById('prompt2').classList.remove('show');
+        setTimeout(() => {
+          document.getElementById('prompt3').classList.add('show');
+        }, 600);
+        step = 3;
+        noClickCount = 0;
       }
-    }, 800);
-  }
-
-  // sprinkle for interactions
-  function sprinkle(n=4){
-    for(let i=0;i<n;i++){
-      setTimeout(()=> {
-        spawnFlower({
-          left: 30 + Math.random()*40,
-          size: 22 + Math.random()*36,
-          duration: 3 + Math.random()*3,
-          delay: Math.random()*0.2
-        });
-      }, i*120);
     }
-  }
 
-  // Accessibility: allow clicking letter area to turn pages too
-  document.getElementById('letter').addEventListener('click', (e)=>{
-    // if clicked outside any page, try to flip top
-    if(!opened) return;
-    const topPage = pages[current];
-    if(topPage) topPage.click();
-  });
+    function moveButton(button) {
+      const randomX = Math.random() * 200 - 100;
+      const randomY = Math.random() * 200 - 100;
+      button.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    }
 
-  // small first-time guided animation (flap wiggle)
-  window.addEventListener('load', ()=>{
-    // gentle flap prompt
-    envelope.animate([
-      { transform: 'translateY(0)' },
-      { transform: 'translateY(-8px)' },
-      { transform: 'translateY(0)' }
-    ], { duration: 1200, iterations: 1, easing: 'ease-out' });
-  });
-</script>
+    function moveButtonAndChangeText() {
+      const button = document.getElementById('noBtn2');
+      const heading = document.getElementById('proposal');
+      moveButton(button);
+      heading.textContent = pleaMessages[noClickCount % pleaMessages.length];
+      noClickCount++;
+    }
+
+    function showFinalMessage() {
+      document.getElementById('prompt3').classList.remove('show');
+      setTimeout(() => {
+        document.getElementById('finalMessage').classList.add('show');
+      }, 600);
+      noClickCount = 0;
+    }
+  </script>
 </body>
 </html>
